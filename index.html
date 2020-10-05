@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue Monster Slayer</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://unpkg.com/vue@next" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1>Magic Typing Game</h1>
+    </header>
+    <div id="game">
+      <section id="monster" class="container">
+        <h2>Monster Health</h2>
+        <div class="healthbar">
+          <div class="healthbar__value" :style="monsterHealthStyle">{{monsterHealth}}</div>
+        </div>
+      </section>
+      <section id="player" class="container">
+        <h2>Your Health</h2>
+        <div class="healthbar">
+          <div class="healthbar__value" :style="userHealthStyle">{{userHealth}}</div>
+        </div>
+      </section>
+      <!-- Spell Controls -->
+      <section v-if="!spellChant" id="controls">
+        <button @click="userChooseAttack()">Fire Attack</button>
+        <button :disabled="!specialAttackReady" @click="userSpecialAttack()" :class="specialAttackStyle">Stone Storm</button>
+        <!-- disabled adalah basic html buat bikin button gabisa dipencet -->
+        <button @click="userHeal()">Water Bender</button>
+        <button @click="userSurrender()">SURRENDER</button>
+      </section>
+
+      <div v-if="spellChant" class="chant-container">
+        <h2>{{chantChallenge}}</h2>
+      <input @keyup.enter="userInputChant"  type="text" >
+      </div>
+      
+
+
+
+      <section id="log" class="container">
+        <h2>Battle Log</h2>
+        <ul v-if="battleLog.length > 0">
+          <li v-for="(items, index) in battleLog">{{items}}</li>
+        </ul>
+      </section>
+    </div>
+  </body>
+</html>
