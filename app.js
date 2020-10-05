@@ -57,13 +57,14 @@ const app = Vue.createApp({
             if(calculateStunChance > 85) {
                 this.battleLog.push('Enemy Stunned, skipped the round');
                 this.monsterHealth = this.monsterHealth - specialDamage;
-                this.battleLog.push(`monster health is ${this.monsterHealth}`)
+                this.spellChant = false;
                 return this.monsterHealth;
             } else {
                 this.battleLog.push('Stun Failed');
                 this.monsterHealth = this.monsterHealth - specialDamage;
                 this.battleLog.push(`monster health is ${this.monsterHealth}`)
                 this.monsterAttack(500);
+                this.spellChant = false;
             if(this.userHealth <= 0) {
                 this.battleLog.push('YOU DIED');
             }
