@@ -8,25 +8,53 @@ const app = Vue.createApp({
         return {
             monsterHealth: 100,
             userHealth: 100,
+            userLevel: 2,
             specialAttackReady: true, //toggled
             battleLog: [],
             userSpell: '',
             spellChant: false,
             chantChallenge: 'Example Chant',
+            spellData: {
+                fireSpell: {
+                    chant: 'Fire wraiths, blasting rage!',
+                    minDamage: 15,
+                    maxDamage: 18,
+                    time: 4000,
+                },
+                stoneStun: {
+                    chant: 'Stone spirits, come forth!',
+                    chance: 50,
+                    minDamage: 20,
+                    maxDamage: 30,
+                    time: 4000,
+                },
+                waterBender: {
+                    chant: 'Water, heal me!',
+                    minDamage: 20,
+                    maxDamage: 30,
+                    time: 4000,
+                },
+                monsterDamage: {
+                    minDamage: 17,
+                    maxDamage: 19,
+                }
+            }, //will be modified
+            spellTimer: 4,
         }
     },
     //functions
     methods: {
         userInputChant(e) {
            this.userSpell = e.target.value;
-
         },
-        userAttack(time) { //fire attack
+        userAttack() { //fire attack
             this.spellChant = true;
-            this.chantChallenge = 'Fire, Attack Forward!'
+            const {fireSpell} = this.spellData;
+            this.chantChallenge = fireSpell.chant;
+            this.spellTimer = fireSpell.time/1000;
             setTimeout(() => {
                 if(this.userSpell === this.chantChallenge) {
-                const userDamage = getRandomNumber(15, 18);
+                const userDamage = getRandomNumber(fireSpell.minDamage, fireSpell.maxDamage);
                  this.battleLog.push(`user attack with fire: ${userDamage} damage`)
                  this.monsterHealth = this.monsterHealth - userDamage; 
                  
@@ -34,27 +62,30 @@ const app = Vue.createApp({
                     this.battleLog.push('User failed to chant FIRE spell')
                 }
                 this.spellChant = false;
-            },time)
+            },fireSpell.time)
             // this.spellChant = false;
             return this.monsterHealth
         },
         monsterAttack(time) {
+            const {monsterDamage} = this.spellData;
             setTimeout(() => {
-              const monsterDamage = getRandomNumber(17, 19) ;
-              this.battleLog.push(`Monster damage is ${monsterDamage}`);
-            this.userHealth = this.userHealth - monsterDamage;
+              const damage = getRandomNumber(monsterDamage.minDamage, monsterDamage.maxDamage) ;
+              this.battleLog.push(`Monster damage is ${damage}`);
+            this.userHealth = this.userHealth - damage;
             return this.userHealth  
             }, time)
             
         },
-        specialAttack(time) {
+        specialAttack() {
             this.spellChant = true;
-            this.chantChallenge = 'Stone Stun!'
+            const {stoneStun} = this.spellData
+            this.chantChallenge = stoneStun.chant
+            this.spellTimer = stoneStun.time/1000;
             setTimeout(() => {
                 if(this.userSpell === this.chantChallenge) {
                     const calculateStunChance = getRandomNumber(0, 100) ;
-            const specialDamage = getRandomNumber(20, 30);
-            if(calculateStunChance > 85) {
+            const specialDamage = getRandomNumber(stoneStun.minDamage, stoneStun.maxDamage);
+            if(calculateStunChance > stoneStun.chance) {
                 this.battleLog.push('Enemy Stunned, skipped the round');
                 this.monsterHealth = this.monsterHealth - specialDamage;
                 this.spellChant = false;
@@ -74,7 +105,26 @@ const app = Vue.createApp({
                     this.monsterAttack(500);
                 }
                 this.spellChant = false;
-            }, time)
+            }, stoneStun.time)
+        },
+        userHeal() {
+            const {waterBender} = this.spellData;
+            this.chantChallenge = waterBender.chant;
+            this.spellTimer = waterBender.time/1000;
+            setTimeout(() => {
+                if(this.userSpell === this.chantChallenge) {
+            const userHealPoint = getRandomNumber(waterBender.minDamage, waterBender.maxDamage);
+            this.battleLog.push(`You Heal is ${userHealPoint} point`);
+            this.userHealth += userHealPoint;
+            console.log(`Your Health is now ${this.userHealth}`);
+            this.monsterAttack(500);
+            this.spellChant = false;
+                } else {
+                    this.battleLog.push('User failed to chant Water Bender');
+                    this.monsterAttack(500);
+                    this.spellChant = false;
+                }
+            }, waterBender.time)
         },
         //dipisahin for another usage
         userChooseAttack() {
@@ -93,12 +143,9 @@ const app = Vue.createApp({
             this.specialAttack(4000);
             this.specialAttackReady = !this.specialAttackReady;
         },
-        userHeal() {
-            const userHealPoint = getRandomNumber(20, 30);
-            console.log(`You Heal is ${userHealPoint} point`)
-            this.userHealth += userHealPoint;
-            console.log(`Your Health is now ${this.userHealth}`)
-            this.monsterAttack(500);
+        userChooseHeal() {
+            this.spellChant = true;
+            this.userHeal();
             this.specialAttackReady = true;
         },
         restartGame() {
@@ -127,7 +174,12 @@ const app = Vue.createApp({
             if(!this.specialAttackReady) {
                 return {backgroundColor: 'black'}
             }
-        }
+        },
+        timerFunction() {//for making timer
+            if (this.spellTimer > 0) {
+                return {}
+            }
+        },
     },
     watch: {
         userHealth() {
@@ -155,4 +207,10 @@ const app = Vue.createApp({
 })
 
 app.mount('#game');
+
+/*
+To Dos:
+1. bikin timer
+2. bikin tutorial
+*/
 

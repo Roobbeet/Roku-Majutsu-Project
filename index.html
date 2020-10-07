@@ -34,12 +34,13 @@
         <button @click="userChooseAttack()">Fire Attack</button>
         <button :disabled="!specialAttackReady" @click="userSpecialAttack()" :class="specialAttackStyle">Stone Storm</button>
         <!-- disabled adalah basic html buat bikin button gabisa dipencet -->
-        <button @click="userHeal()">Water Bender</button>
+        <button @click="userChooseHeal()">Water Bender</button>
         <button @click="userSurrender()">SURRENDER</button>
       </section>
 
       <div v-if="spellChant" class="chant-container">
-        <h2>{{chantChallenge}}</h2>
+        <h2>{{chantChallenge}} </h2>
+        <h3 v-if="spellTimer > 0" :class="timerFunction">{{spellTimer}} seconds</h3>
       <input @keyup.enter="userInputChant"  type="text" >
       </div>
       
