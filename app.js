@@ -126,8 +126,12 @@ const app = Vue.createApp({
                 }
             }, waterBender.time)
         },
+        inputAutoFocus(event) {
+            console.log(event)
+        },
         //dipisahin for another usage
         userChooseAttack() {
+            // inputAutoFocus();
             this.userAttack(4000);
             if(this.monsterHealth <= 0) {
                 console.log('Monter died, go on to the next battle');
@@ -161,6 +165,7 @@ const app = Vue.createApp({
                 }
                 this.specialAttackReady = true;
         }
+
     },
     //dynamic stylings
     computed: {

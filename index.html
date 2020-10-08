@@ -41,7 +41,7 @@
       <div v-if="spellChant" class="chant-container">
         <h2>{{chantChallenge}} </h2>
         <h3 v-if="spellTimer > 0" :class="timerFunction">{{spellTimer}} seconds</h3>
-      <input @keyup.enter="userInputChant"  type="text" >
+      <input @keyup.enter="userInputChant"  type="text" :autofocus="spellChant">
       </div>
       
 
