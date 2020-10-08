@@ -38,12 +38,18 @@
         <button @click="userSurrender()">SURRENDER</button>
       </section>
 
-      <div v-if="spellChant" class="chant-container">
-        <h2>{{chantChallenge}} </h2>
+      <div class="chant-container">
+        <div v-if="spellChant">
+          <h2>{{chantChallenge}} </h2>
         <h3 v-if="spellTimer > 0" :class="timerFunction">Time Left: {{spellTimer}} seconds</h3>
-      <input @keyup.enter="userInputChant"  type="text" :autofocus="spellChant">
-      <h4>Press enter to submit chant</h4>
+        </div>
+        <div class="user-chant">
+          <input @keyup.enter="userInputChant"  type="text" ref="spellInput">
+          <h4>Press enter to submit chant</h4>
+        </div>
       </div>
+      
+      
       
 
 

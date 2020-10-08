@@ -49,22 +49,29 @@ const app = Vue.createApp({
             this.spellChant= false;
             this.chantChallenge= '';
             this.userSpell = '';
+            this.$refs.spellInput.value = '';
         },
-        timerDisplay() {
-                setInterval(() => {
-                    if(this.spellTimer > 0) {
-                        this.spellTimer--
-                        console.log(this.spellTimer)
-                    }
-                }, 1000)
-        },
+        // timerDisplay() {
+        //      setInterval(() => {
+        //             if(this.spellTimer > 0) {
+        //                 this.spellTimer--
+        //                 console.log(this.spellTimer)
+        //             } else {
+        //                 return
+        //             }
+        //         }, 1000);
+                
+        // },
         userInputChant(e) {
            this.userSpell = e.target.value;
         },
+        //tipe2 attack/heal
         userAttack() { //fire attack
             const {fireSpell} = this.spellData;
             this.chantChallenge = fireSpell.chant;
             this.spellTimer = fireSpell.time/1000;
+            console.log(this.spellTimer)
+            // this.timerDisplay();
             setTimeout(() => {
                 if(this.userSpell === this.chantChallenge) {
                 const userDamage = getRandomNumber(fireSpell.minDamage, fireSpell.maxDamage);
@@ -138,15 +145,16 @@ const app = Vue.createApp({
                 }
             }, waterBender.time)
         },
-        inputAutoFocus(event) {
-            console.log(event)
+        inputAutoFocus() {
+            this.$refs.spellInput.focus();
         },
         //dipisahin for another usage
         userChooseAttack() {
             this.spellChant = true;
             // inputAutoFocus();
-            this.timerDisplay();
-            this.userAttack(4000);
+            this.inputAutoFocus();
+            // this.timerDisplay();
+            this.userAttack();
             if(this.monsterHealth <= 0) {
                 console.log('Monter died, go on to the next battle');
             } else {
@@ -159,11 +167,15 @@ const app = Vue.createApp({
         },
         userSpecialAttack() {
             this.spellChant = true;
+            this.inputAutoFocus();
+            // this.timerDisplay();
             this.specialAttack(4000);
             this.specialAttackReady = !this.specialAttackReady;
         },
         userChooseHeal() {
             this.spellChant = true;
+            this.inputAutoFocus();
+            // this.timerDisplay();
             this.userHeal();
             this.specialAttackReady = true;
         },
