@@ -40,15 +40,28 @@ const app = Vue.createApp({
                 }
             }, //will be modified
             spellTimer: 4,
+            readyTimer: 1,
         }
     },
     //functions
     methods: {
+        defaultCondition() {
+            this.spellChant= false;
+            this.chantChallenge= '';
+            this.userSpell = '';
+        },
+        timerDisplay() {
+                setInterval(() => {
+                    if(this.spellTimer > 0) {
+                        this.spellTimer--
+                        console.log(this.spellTimer)
+                    }
+                }, 1000)
+        },
         userInputChant(e) {
            this.userSpell = e.target.value;
         },
         userAttack() { //fire attack
-            this.spellChant = true;
             const {fireSpell} = this.spellData;
             this.chantChallenge = fireSpell.chant;
             this.spellTimer = fireSpell.time/1000;
@@ -61,7 +74,7 @@ const app = Vue.createApp({
                 }else {
                     this.battleLog.push('User failed to chant FIRE spell')
                 }
-                this.spellChant = false;
+                this.defaultCondition();
             },fireSpell.time)
             // this.spellChant = false;
             return this.monsterHealth
@@ -77,7 +90,6 @@ const app = Vue.createApp({
             
         },
         specialAttack() {
-            this.spellChant = true;
             const {stoneStun} = this.spellData
             this.chantChallenge = stoneStun.chant
             this.spellTimer = stoneStun.time/1000;
@@ -88,14 +100,14 @@ const app = Vue.createApp({
             if(calculateStunChance > stoneStun.chance) {
                 this.battleLog.push('Enemy Stunned, skipped the round');
                 this.monsterHealth = this.monsterHealth - specialDamage;
-                this.spellChant = false;
+                this.defaultCondition();
                 return this.monsterHealth;
             } else {
                 this.battleLog.push('Stun Failed');
                 this.monsterHealth = this.monsterHealth - specialDamage;
                 this.battleLog.push(`monster health is ${this.monsterHealth}`)
                 this.monsterAttack(500);
-                this.spellChant = false;
+                this.defaultCondition();
             if(this.userHealth <= 0) {
                 this.battleLog.push('YOU DIED');
             }
@@ -104,7 +116,7 @@ const app = Vue.createApp({
                     this.battleLog.push('User failed to chant FIRE spell');
                     this.monsterAttack(500);
                 }
-                this.spellChant = false;
+                this.defaultCondition();
             }, stoneStun.time)
         },
         userHeal() {
@@ -118,11 +130,11 @@ const app = Vue.createApp({
             this.userHealth += userHealPoint;
             console.log(`Your Health is now ${this.userHealth}`);
             this.monsterAttack(500);
-            this.spellChant = false;
+            this.defaultCondition()
                 } else {
                     this.battleLog.push('User failed to chant Water Bender');
                     this.monsterAttack(500);
-                    this.spellChant = false;
+                    this.defaultCondition()
                 }
             }, waterBender.time)
         },
@@ -131,7 +143,9 @@ const app = Vue.createApp({
         },
         //dipisahin for another usage
         userChooseAttack() {
+            this.spellChant = true;
             // inputAutoFocus();
+            this.timerDisplay();
             this.userAttack(4000);
             if(this.monsterHealth <= 0) {
                 console.log('Monter died, go on to the next battle');
@@ -144,6 +158,7 @@ const app = Vue.createApp({
             this.specialAttackReady = true;
         },
         userSpecialAttack() {
+            this.spellChant = true;
             this.specialAttack(4000);
             this.specialAttackReady = !this.specialAttackReady;
         },
@@ -182,7 +197,7 @@ const app = Vue.createApp({
         },
         timerFunction() {//for making timer
             if (this.spellTimer > 0) {
-                return {}
+                return this.displayTimer = true;
             }
         },
     },
@@ -215,7 +230,7 @@ app.mount('#game');
 
 /*
 To Dos:
-1. bikin timer
+1. bikin timer v
 2. bikin tutorial
 */
 
