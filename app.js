@@ -19,20 +19,20 @@ const app = Vue.createApp({
                     chant: 'Fire wraiths, blasting rage!',
                     minDamage: 15,
                     maxDamage: 18,
-                    time: 4000,
+                    time: 6000,
                 },
                 stoneStun: {
                     chant: 'Stone spirits, come forth!',
                     chance: 50,
                     minDamage: 20,
                     maxDamage: 30,
-                    time: 4000,
+                    time: 6000,
                 },
                 waterBender: {
                     chant: 'Water, heal me!',
                     minDamage: 20,
                     maxDamage: 30,
-                    time: 4000,
+                    time: 6000,
                 },
                 monsterDamage: {
                     minDamage: 17,
@@ -146,6 +146,7 @@ const app = Vue.createApp({
             }, waterBender.time)
         },
         inputAutoFocus() {
+            this.$refs.spellInput.value = '';
             this.$refs.spellInput.focus();
         },
         //dipisahin for another usage
