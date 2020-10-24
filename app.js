@@ -45,6 +45,7 @@ const app = Vue.createApp({
             readyTimer: 1,
             userTimer: this.spellTimer,
             showTutorial: true,
+            inputDisabled: true,
         }
     },
     //functions
