@@ -41,18 +41,29 @@
       <div class="chant-container">
         <div v-if="spellChant">
           <h2>{{chantChallenge}} </h2>
-        <h3 v-if="spellTimer > 0" :class="timerFunction">Time Left: {{spellTimer}} seconds</h3>
+        <h3 v-if="spellTimer > 0" :class="timerFunction">Time Left: {{userTimer}} seconds</h3>
         </div>
         <div class="user-chant">
-          <input @keyup.enter="userInputChant"  type="text" ref="spellInput">
+          <input @keyup.enter="userInputChant" @keyup="keydownChant"  type="text" ref="spellInput" v-model="currentChant">
           <h4>Press enter to submit chant</h4>
         </div>
       </div>
       
       
       
-
-
+      <button @click="toggleTutorial">{{showTutorial ? 'Hide' : 'Show'}} Tutorial</button>
+      <section v-if="showTutorial" class="tutorial">
+        <ol>
+          <li>This is a testing game, I am so sorry for the broken UI/mechs</li>
+          <li>You given some seconds to write up the spell, known as CHANTING</li>
+          <li>CHANT is case sensitive, so yeah...</li>
+          <li>PRESS ENTER AFTER YOU COMPLETE THE CHANT!</li>
+          <li>Fire attack is basic attack</li>
+          <li>Stone Storm is stun based attack, the chance to stun the enemy is 20% (pretty big right)</li>
+          <li>Water bender is healing spell, but the monster will still attack you afterwards (lol)</li>
+          <li>Don't surrender, pls</li>
+        </ol>
+      </section>
 
       <section id="log" class="container">
         <h2>Battle Log</h2>

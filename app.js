@@ -13,6 +13,7 @@ const app = Vue.createApp({
             battleLog: [],
             userSpell: '',
             spellChant: false,
+            currentChant: '',
             chantChallenge: 'Example Chant',
             spellData: {
                 fireSpell: {
@@ -23,7 +24,8 @@ const app = Vue.createApp({
                 },
                 stoneStun: {
                     chant: 'Stone spirits, come forth!',
-                    chance: 50,
+                    realChange: 20,
+                    chance: 4, //change for calculation
                     minDamage: 20,
                     maxDamage: 30,
                     time: 6000,
@@ -39,39 +41,48 @@ const app = Vue.createApp({
                     maxDamage: 19,
                 }
             }, //will be modified
-            spellTimer: 4,
+            spellTimer: 0,
             readyTimer: 1,
+            userTimer: this.spellTimer,
+            showTutorial: true,
         }
     },
     //functions
     methods: {
+        keydownChant(e) {
+            this.currentChant = e.target.value;
+        },
         defaultCondition() {
             this.spellChant= false;
             this.chantChallenge= '';
             this.userSpell = '';
             this.$refs.spellInput.value = '';
+            this.currentChant = ''
         },
-        // timerDisplay() {
-        //      setInterval(() => {
-        //             if(this.spellTimer > 0) {
-        //                 this.spellTimer--
-        //                 console.log(this.spellTimer)
-        //             } else {
-        //                 return
-        //             }
-        //         }, 1000);
-                
-        // },
+        timerDisplay() {
+            this.userTimer = this.spellTimer;
+            var interval = setInterval(() => {
+                    if(this.userTimer > 0) {
+                        this.userTimer--
+                    } else {
+                        return this.userTimer = 0;
+                    }
+                }, 1000);
+            setTimeout(() => {
+                clearInterval(interval)
+            }, this.spellTimer * 1000)
+        },
         userInputChant(e) {
            this.userSpell = e.target.value;
         },
+
         //tipe2 attack/heal
         userAttack() { //fire attack
+            console.log(this.$refs.spellInput.value);
             const {fireSpell} = this.spellData;
             this.chantChallenge = fireSpell.chant;
             this.spellTimer = fireSpell.time/1000;
-            console.log(this.spellTimer)
-            // this.timerDisplay();
+            this.timerDisplay();
             setTimeout(() => {
                 if(this.userSpell === this.chantChallenge) {
                 const userDamage = getRandomNumber(fireSpell.minDamage, fireSpell.maxDamage);
@@ -83,7 +94,6 @@ const app = Vue.createApp({
                 }
                 this.defaultCondition();
             },fireSpell.time)
-            // this.spellChant = false;
             return this.monsterHealth
         },
         monsterAttack(time) {
@@ -100,9 +110,10 @@ const app = Vue.createApp({
             const {stoneStun} = this.spellData
             this.chantChallenge = stoneStun.chant
             this.spellTimer = stoneStun.time/1000;
+            this.timerDisplay();
             setTimeout(() => {
                 if(this.userSpell === this.chantChallenge) {
-                    const calculateStunChance = getRandomNumber(0, 100) ;
+                    const calculateStunChance = getRandomNumber(1, 5) ;
             const specialDamage = getRandomNumber(stoneStun.minDamage, stoneStun.maxDamage);
             if(calculateStunChance > stoneStun.chance) {
                 this.battleLog.push('Enemy Stunned, skipped the round');
@@ -113,7 +124,7 @@ const app = Vue.createApp({
                 this.battleLog.push('Stun Failed');
                 this.monsterHealth = this.monsterHealth - specialDamage;
                 this.battleLog.push(`monster health is ${this.monsterHealth}`)
-                this.monsterAttack(500);
+                this.monsterAttack(this.spellTimer * 1000 + 500);
                 this.defaultCondition();
             if(this.userHealth <= 0) {
                 this.battleLog.push('YOU DIED');
@@ -121,7 +132,7 @@ const app = Vue.createApp({
             }
             }else {
                     this.battleLog.push('User failed to chant FIRE spell');
-                    this.monsterAttack(500);
+                    this.monsterAttack(this.spellTimer * 1000 + 500);
                 }
                 this.defaultCondition();
             }, stoneStun.time)
@@ -130,17 +141,18 @@ const app = Vue.createApp({
             const {waterBender} = this.spellData;
             this.chantChallenge = waterBender.chant;
             this.spellTimer = waterBender.time/1000;
+            this.timerDisplay();
             setTimeout(() => {
                 if(this.userSpell === this.chantChallenge) {
             const userHealPoint = getRandomNumber(waterBender.minDamage, waterBender.maxDamage);
             this.battleLog.push(`You Heal is ${userHealPoint} point`);
             this.userHealth += userHealPoint;
             console.log(`Your Health is now ${this.userHealth}`);
-            this.monsterAttack(500);
+            this.monsterAttack(this.spellTimer * 1000 + 500);
             this.defaultCondition()
                 } else {
                     this.battleLog.push('User failed to chant Water Bender');
-                    this.monsterAttack(500);
+                    this.monsterAttack(this.spellTimer * 1000 + 500);
                     this.defaultCondition()
                 }
             }, waterBender.time)
@@ -149,6 +161,7 @@ const app = Vue.createApp({
             this.$refs.spellInput.value = '';
             this.$refs.spellInput.focus();
         },
+
         //dipisahin for another usage
         userChooseAttack() {
             this.spellChant = true;
@@ -159,7 +172,7 @@ const app = Vue.createApp({
             if(this.monsterHealth <= 0) {
                 console.log('Monter died, go on to the next battle');
             } else {
-                this.monsterAttack(4500);
+                this.monsterAttack(this.spellTimer * 1000 + 500);
             if(this.userHealth <= 0) {
                 console.log('YOU DIED');
             }
@@ -192,6 +205,9 @@ const app = Vue.createApp({
                 this.restartGame()
                 }
                 this.specialAttackReady = true;
+        },
+        toggleTutorial() {
+            this.showTutorial = !this.showTutorial
         }
 
     },
@@ -234,7 +250,19 @@ const app = Vue.createApp({
             } else if (this.monsterHealth > 100) {
                 this.monsterHealth = 100;
             }
-        }
+        },
+        // currentChant() {
+        //     var currentChantArr = this.currentChant.split('');
+        //     var challengeArr = this.chantChallenge.split('');
+        //     if(currentChantArr[currentChantArr.length  - 1] ===  challengeArr[currentChantArr.length  - 1] && this.currentChant != '' && currentChantArr[currentChantArr.length  - 1]) {
+        //         currentChantArr.pop();
+        //         this.currentChant = currentChantArr.join('')
+        //         console.log(this.currentChant)
+        //     }
+        //     else {
+        //         console.log('salah')
+        //     }
+        // }
     }
 
 })
