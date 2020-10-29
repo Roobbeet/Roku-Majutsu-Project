@@ -51,19 +51,6 @@ const app = Vue.createApp({
     //functions
     methods: {
         keydownChant(e) {
-            // var typed = String.fromCharCode(e.which)
-            // var joinedSpell = this.chantChallenge.split(''); //chant array
-            // // console.log(joinedSpell)
-            // // console.log(typed);
-            // for(var i = 0; i < joinedSpell.length; i ++) {
-            //     if(joinedSpell[i] === typed) {
-            //         console.log(typed)
-            //         break
-            //     } else {
-            //         console.log('Not right!');
-            //         break
-            //     }
-            // }
 
         },
         defaultCondition() {
@@ -265,18 +252,30 @@ const app = Vue.createApp({
                 this.monsterHealth = 100;
             }
         },
-        // currentChant() {
-        //     var currentChantArr = this.currentChant.split('');
-        //     var challengeArr = this.chantChallenge.split('');
-        //     if(currentChantArr[currentChantArr.length  - 1] ===  challengeArr[currentChantArr.length  - 1] && this.currentChant != '' && currentChantArr[currentChantArr.length  - 1]) {
-        //         currentChantArr.pop();
-        //         this.currentChant = currentChantArr.join('')
-        //         console.log(this.currentChant)
-        //     }
-        //     else {
-        //         console.log('salah')
-        //     }
-        // }
+        currentChant() {
+            // var currentChantArr = this.currentChant.split('');
+            // var challengeArr = this.chantChallenge.split('');
+            // if(currentChantArr[currentChantArr.length  - 1] ===  challengeArr[currentChantArr.length  - 1] && this.currentChant != '' && currentChantArr[currentChantArr.length  - 1]) {
+            //     currentChantArr.pop();
+            //     this.currentChant = currentChantArr.join('')
+            //     console.log(this.currentChant)
+            // }
+            // else {
+            //     console.log('salah')
+            // }
+            var typedArray = this.currentChant.split('')
+            var joinedSpell = this.chantChallenge.split(''); //chant array
+            for(var i = 0; i < typedArray.length; i) {
+                if(typedArray[i] === joinedSpell[i]) {
+                    i++
+                } else {
+                    typedArray.pop();
+                    this.currentChant = typedArray.join('');
+                    return i
+                }
+            }
+        }
+
     }
 
 })
