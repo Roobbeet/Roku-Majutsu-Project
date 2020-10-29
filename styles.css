@@ -143,3 +143,6 @@ button:disabled {
 .chant-container h3 {
   text-align: center;
 }
+.highlighted {
+  color: red;
+}

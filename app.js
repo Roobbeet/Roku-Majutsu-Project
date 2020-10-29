@@ -44,14 +44,27 @@ const app = Vue.createApp({
             spellTimer: 0,
             readyTimer: 1,
             userTimer: this.spellTimer,
-            showTutorial: true,
+            showTutorial: false,
             inputDisabled: true,
         }
     },
     //functions
     methods: {
         keydownChant(e) {
-            this.currentChant = e.target.value;
+            // var typed = String.fromCharCode(e.which)
+            // var joinedSpell = this.chantChallenge.split(''); //chant array
+            // // console.log(joinedSpell)
+            // // console.log(typed);
+            // for(var i = 0; i < joinedSpell.length; i ++) {
+            //     if(joinedSpell[i] === typed) {
+            //         console.log(typed)
+            //         break
+            //     } else {
+            //         console.log('Not right!');
+            //         break
+            //     }
+            // }
+
         },
         defaultCondition() {
             this.spellChant= false;
@@ -80,6 +93,7 @@ const app = Vue.createApp({
         //tipe2 attack/heal
         userAttack() { //fire attack
             console.log(this.$refs.spellInput.value);
+            this.currentChant = '';
             const {fireSpell} = this.spellData;
             this.chantChallenge = fireSpell.chant;
             this.spellTimer = fireSpell.time/1000;
@@ -142,6 +156,7 @@ const app = Vue.createApp({
             const {waterBender} = this.spellData;
             this.chantChallenge = waterBender.chant;
             this.spellTimer = waterBender.time/1000;
+            console.log(this.spellTimer)
             this.timerDisplay();
             setTimeout(() => {
                 if(this.userSpell === this.chantChallenge) {
@@ -149,13 +164,12 @@ const app = Vue.createApp({
             this.battleLog.push(`You Heal is ${userHealPoint} point`);
             this.userHealth += userHealPoint;
             console.log(`Your Health is now ${this.userHealth}`);
-            this.monsterAttack(this.spellTimer * 1000 + 500);
             this.defaultCondition()
                 } else {
                     this.battleLog.push('User failed to chant Water Bender');
-                    this.monsterAttack(this.spellTimer * 1000 + 500);
                     this.defaultCondition()
                 }
+            this.monsterAttack(500);
             }, waterBender.time)
         },
         inputAutoFocus() {
@@ -209,8 +223,7 @@ const app = Vue.createApp({
         },
         toggleTutorial() {
             this.showTutorial = !this.showTutorial
-        }
-
+        },
     },
     //dynamic stylings
     computed: {
