@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vue Monster Slayer</title>
+    <title>Magic Typing Game</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700&display=swap"
       rel="stylesheet"
@@ -52,12 +52,14 @@
       
       
       
-      <button @click="toggleTutorial">{{showTutorial ? 'Hide' : 'Show'}} Tutorial</button>
-      <section v-if="showTutorial" class="tutorial">
+      <button class="tutorial-btn"@click="toggleTutorial">{{showTutorial ? 'Hide' : 'Show'}} Tutorial</button>
+
+      <section v-show="showTutorial" class="tutorial">
         <ol>
           <li>This is a testing game, I am so sorry for the broken UI/mechs</li>
           <li>You given some seconds to write up the spell, known as CHANTING</li>
           <li>CHANT is case sensitive, so yeah...</li>
+          <li>CHANT will not written if you type the wrong key</li>
           <li>PRESS ENTER AFTER YOU COMPLETE THE CHANT!</li>
           <li>Fire attack is basic attack</li>
           <li>Stone Storm is stun based attack, the chance to stun the enemy is 20% (pretty big right)</li>

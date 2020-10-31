@@ -23,18 +23,18 @@ const app = Vue.createApp({
                     time: 6000,
                 },
                 stoneStun: {
-                    chant: 'Stone spirits, come forth!',
+                    chant: 'Stone spirits, come forth to our enemy!',
                     realChange: 20,
                     chance: 4, //change for calculation
                     minDamage: 20,
                     maxDamage: 30,
-                    time: 6000,
+                    time: 7000,
                 },
                 waterBender: {
-                    chant: 'Water, heal me!',
+                    chant: 'Water refreshes me!',
                     minDamage: 20,
                     maxDamage: 30,
-                    time: 6000,
+                    time: 4000,
                 },
                 monsterDamage: {
                     minDamage: 17,
@@ -126,7 +126,7 @@ const app = Vue.createApp({
                 this.battleLog.push('Stun Failed');
                 this.monsterHealth = this.monsterHealth - specialDamage;
                 this.battleLog.push(`monster health is ${this.monsterHealth}`)
-                this.monsterAttack(this.spellTimer * 1000 + 500);
+                this.monsterAttack(500);
                 this.defaultCondition();
             if(this.userHealth <= 0) {
                 this.battleLog.push('YOU DIED');
@@ -134,7 +134,7 @@ const app = Vue.createApp({
             }
             }else {
                     this.battleLog.push('User failed to chant FIRE spell');
-                    this.monsterAttack(this.spellTimer * 1000 + 500);
+                    this.monsterAttack(500);
                 }
                 this.defaultCondition();
             }, stoneStun.time)
@@ -253,16 +253,6 @@ const app = Vue.createApp({
             }
         },
         currentChant() {
-            // var currentChantArr = this.currentChant.split('');
-            // var challengeArr = this.chantChallenge.split('');
-            // if(currentChantArr[currentChantArr.length  - 1] ===  challengeArr[currentChantArr.length  - 1] && this.currentChant != '' && currentChantArr[currentChantArr.length  - 1]) {
-            //     currentChantArr.pop();
-            //     this.currentChant = currentChantArr.join('')
-            //     console.log(this.currentChant)
-            // }
-            // else {
-            //     console.log('salah')
-            // }
             var typedArray = this.currentChant.split('')
             var joinedSpell = this.chantChallenge.split(''); //chant array
             for(var i = 0; i < typedArray.length; i) {
@@ -285,6 +275,6 @@ app.mount('#game');
 /*
 To Dos:
 1. bikin timer v
-2. bikin tutorial
+2. bikin tutorial v
 */
 

@@ -93,6 +93,11 @@ button:disabled {
   cursor: not-allowed;
 }
 
+.tutorial-btn {
+  margin-left: 50vw;
+  transform: translateX(-50%);
+}
+
 #log ul {
   list-style: none;
   margin: 0;
