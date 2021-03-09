@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 
-import logo from './logo.svg';
+import SpellBtnComponent from './components/spellbtn.component'
+
 import './App.css';
 
 function App() {
@@ -22,8 +23,14 @@ function App() {
     userSpell: '',
     spellChant: false,
     currentChant: '',
-    chantChallenge: 'Example Chant',
+    chantChallenge: 'No Spell Yet!',
   })
+
+  let spellTypes = [ //for spell mapping
+    'fireSpell',
+    'stoneStun',
+    'waterBender',
+  ]
 
   //data
   const spellData = {
@@ -53,13 +60,31 @@ function App() {
     }
   }
 
-  function handleUserAction() {
-
+  function handleUserAction(name) { //onClick handler on spell button
+    console.log(name)
   };
 
   function handleMonsterAction() {
 
+  };
+
+  function defaultCondition() {
+    modSpellStatus({
+      specialAttackReady: true, //toggled
+      battleLog: [],
+      userSpell: '',
+      spellChant: false,
+      currentChant: '',
+      chantChallenge: 'No Spell Yet!',
+    })
   }
+
+  /* Questions 
+  1. where the datas will be stored?
+  2. how to detect user and monster data changes like levels etc. ?
+  3. where to calculate user level?
+  
+  */
 
   //watch
   useEffect(() => {
@@ -74,7 +99,16 @@ function App() {
       alert('you lose')
       restartGame()
     }
-  }, [playerData])
+  }, [playerData]);
+
+  useEffect(() => {
+    //get monster data
+
+
+    //get player data (levels etc.)
+
+
+  }, []) //init conditions
 
   function restartGame() {
     //fetch user data
@@ -103,21 +137,45 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <header>
+        <h1>Magic Typing Game by <a href="https://github.com/Roobbeet" target="_blank">Roobbeet</a></h1>
       </header>
+
+      <div id="app">
+        <div className="healths">
+          <div className="friendly">
+            {/* loop health friendly  */}
+          </div>
+          <div className="enemy">
+            {/* loop health enemy */}
+          </div>
+        </div>
+
+        <div className="spell_controller-container">
+          <section v-if="!spellChant" id="controls">
+            {/* loop button for enabled spells and surrender */}
+            {
+              spellTypes.map((el) =>
+                <SpellBtnComponent name={el} type={'offensive'} clickHandler={handleUserAction} key={el}></SpellBtnComponent>
+              )
+            }
+          </section>
+        </div>
+        </div>
+
+      <div class="chant-container">
+        <div v-if="spellChant">
+          {/* spell challenge */}
+          <h2></h2> 
+          {/* timer */}
+          <h3></h3>
+      </div>
+      <div class="user-chant">
+          <input></input>
+          <h4>Press enter to submit chant</h4>
+        </div>
     </div>
+    </div >
   );
 }
 
