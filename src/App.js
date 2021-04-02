@@ -2,6 +2,9 @@ import React, { useContext, useEffect, useState } from 'react'
 
 import SpellBtnComponent from './components/spellbtn.component'
 
+import HealthBarComponent from './components/health.component'
+
+
 import './App.css';
 
 function App() {
@@ -36,13 +39,15 @@ function App() {
   const spellData = {
     fireSpell: {
       chant: 'Fire wraiths, blasting rage!',
+      name: 'Fire Spell',
       minDamage: 15,
       maxDamage: 18,
       time: 6000,
     },
     stoneStun: {
       chant: 'Stone spirits, come forth to our enemy!',
-      realChange: 20,
+      name: 'Stone Stun',
+      realChance: 20,
       chance: 4, //change for calculation
       minDamage: 20,
       maxDamage: 30,
@@ -50,6 +55,7 @@ function App() {
     },
     waterBender: {
       chant: 'Water refreshes me!',
+      name: 'Water Bender',
       minDamage: 20,
       maxDamage: 30,
       time: 4000,
@@ -144,19 +150,24 @@ function App() {
       <div id="app">
         <div className="healths">
           <div className="friendly">
-            {/* loop health friendly  */}
+            {playerData ? 
+            <HealthBarComponent health={playerData.health} name={playerData.name} isEnemy={false}></HealthBarComponent> : null
+          }
           </div>
           <div className="enemy">
-            {/* loop health enemy */}
+            {
+            monsterData ?
+            <HealthBarComponent health={monsterData.health} name={monsterData.name} isEnemy={true}></HealthBarComponent> : null
+            }
           </div>
         </div>
 
         <div className="spell_controller-container">
-          <section v-if="!spellChant" id="controls">
+          <section id="controls">
             {/* loop button for enabled spells and surrender */}
             {
               spellTypes.map((el) =>
-                <SpellBtnComponent name={el} type={'offensive'} clickHandler={handleUserAction} key={el}></SpellBtnComponent>
+                <SpellBtnComponent name={spellData[el].name} type={'offensive'} clickHandler={handleUserAction} key={el}></SpellBtnComponent>
               )
             }
           </section>
@@ -164,8 +175,11 @@ function App() {
         </div>
 
       <div class="chant-container">
-        <div v-if="spellChant">
-          {/* spell challenge */}
+        <div>
+          {
+            spellStatus ?
+            <h4>{spellStatus.chantChallenge}</h4> : null
+          }
           <h2></h2> 
           {/* timer */}
           <h3></h3>
