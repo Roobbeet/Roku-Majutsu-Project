@@ -16,73 +16,125 @@ function App() {
   });
   const [playerData, modifyPlayer] = useState({
     name: 'guest player',
-    health: 100,
+    health: 30,
     level: 2,
   })
+  
   const [battlelog, modifyLog] = useState([])
+
+  //status of the spell, generally
   const [spellStatus, modSpellStatus] = useState({
     specialAttackReady: true, //toggled
     battleLog: [],
+    time: 0,
     userSpell: '',
     spellChant: false,
     currentChant: '',
     chantChallenge: 'No Spell Yet!',
   })
+  //for current chant
+  const [chantData, setChant] = useState({
+    time: 0,
+    userSpell: '',
+    currentChant: '',
+    chantChallenge: 'No Spell Yet!',
+  })
 
-  let spellTypes = [ //for spell mapping
-    'fireSpell',
-    'stoneStun',
-    'waterBender',
-  ]
+
 
   //data
-  const spellData = {
-    fireSpell: {
+  const spellData = [
+    {
       chant: 'Fire wraiths, blasting rage!',
       name: 'Fire Spell',
       minDamage: 15,
       maxDamage: 18,
       time: 6000,
     },
-    stoneStun: {
+    {
       chant: 'Stone spirits, come forth to our enemy!',
       name: 'Stone Stun',
+      isSpecial: true,
       realChance: 20,
       chance: 4, //change for calculation
       minDamage: 20,
       maxDamage: 30,
       time: 7000,
     },
-    waterBender: {
+    {
       chant: 'Water refreshes me!',
       name: 'Water Bender',
       minDamage: 20,
       maxDamage: 30,
       time: 4000,
     },
-    monsterDamage: {
-      minDamage: 17,
-      maxDamage: 19,
-    }
+  ]
+  const monsterAttack = {
+    minDamage: 17,
+    maxDamage: 19,
+  }
+  const defaultuserData = {
+    name: 'guest player',
+    health: 200,
+    level: 2,
+  }
+  const defaultmonsterData = {
+    name: 'monster 1',
+    health: 100,
+    level: 2
   }
 
   function handleUserAction(name) { //onClick handler on spell button
-    console.log(name)
+    let choosenSpell = spellData.filter(spell => spell.name === name)[0] //get another way to get spell
+    console.log(choosenSpell)
   };
 
   function handleMonsterAction() {
 
   };
 
+  function timerDisplay() {
+    var timer = spellStatus.time;
+    var interval = setInterval(() => {
+      if(spellStatus.time > 0) {
+        modSpellStatus({
+          ...spellStatus,
+          time: spellStatus.time--
+        })
+      } else {
+        return timer = 0;
+      }
+    }, 1000)
+    setTimeout(() => {
+      clearInterval(interval)
+    }, 10000)
+  }
+
   function defaultCondition() {
     modSpellStatus({
       specialAttackReady: true, //toggled
-      battleLog: [],
       userSpell: '',
       spellChant: false,
       currentChant: '',
       chantChallenge: 'No Spell Yet!',
     })
+  }
+
+  function saveProgress() {
+    window.localStorage.setItem('Player', JSON.stringify(playerData))
+  }
+
+  function restartGame(isSurrender) {
+    //fetch user data
+    if (isSurrender) {
+      if (window.confirm('You sure?')) {
+        window.alert('Noob')
+      }
+    }
+    modifyPlayer(defaultuserData)
+    modifyMonster(defaultmonsterData)
+    modifyLog([])
+    defaultCondition()
   }
 
   /* Questions 
@@ -116,30 +168,7 @@ function App() {
 
   }, []) //init conditions
 
-  function restartGame() {
-    //fetch user data
-    const defaultuserData = {
-      name: 'guest player',
-      health: 100,
-      level: 2,
-    }
-    const defaultmonsterData = {
-      name: 'monster 1',
-      health: 100,
-      level: 2
-    }
-    modifyPlayer(defaultuserData)
-    modifyMonster(defaultmonsterData)
-    modifyLog([])
-    modSpellStatus({
-      specialAttackReady: true,
-      battleLog: [],
-      userSpell: '',
-      spellChant: false,
-      currentChant: '',
-      chantChallenge: 'Example Chant',
-    })
-  }
+
 
   return (
     <div className="App">
@@ -166,29 +195,39 @@ function App() {
           <section id="controls">
             {/* loop button for enabled spells and surrender */}
             {
-              spellTypes.map((el) =>
-                <SpellBtnComponent name={spellData[el].name} type={'offensive'} clickHandler={handleUserAction} key={el}></SpellBtnComponent>
+              spellData.map((el) =>
+                <SpellBtnComponent name={el.name} type={'offensive'} clickHandler={handleUserAction} key={el.name}></SpellBtnComponent>
               )
             }
           </section>
+          <SpellBtnComponent name="Surrender" clickHandler={restartGame} isSurrender={true}></SpellBtnComponent>
+          <SpellBtnComponent name="Save" clickHandler={saveProgress}></SpellBtnComponent>
+
         </div>
         </div>
 
-      <div class="chant-container">
+      <div className="chant-container">
         <div>
           {
             spellStatus ?
-            <h4>{spellStatus.chantChallenge}</h4> : null
+            <h3>{spellStatus.chantChallenge}</h3> : null
           }
-          <h2></h2> 
-          {/* timer */}
-          <h3></h3>
+          {spellStatus.spellChant ? <h4>Time (sec): {spellStatus.time}</h4> : ''}
       </div>
-      <div class="user-chant">
+      <div className="user-chant">
           <input></input>
           <h4>Press enter to submit chant</h4>
         </div>
-    </div>
+      </div>
+      <div>
+        <h2>Battle Log</h2>
+        <ul>
+         {
+           battlelog.length > 0 ? 
+           battlelog.forEach(log => <li>{log}</li>) : null
+         }
+        </ul>
+      </div>
     </div >
   );
 }

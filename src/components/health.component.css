@@ -1,9 +1,12 @@
 .healthbar__value {
     /* display: none; */
     height: 30px;
+    max-width: 100%;
+    color: white;
 }
 .healthbar_ {
     width: 80vw;
     margin: auto;
-    color: white;
+    /* color: white; */
+     border: 2px solid black;
 }
