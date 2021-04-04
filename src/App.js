@@ -19,7 +19,7 @@ function App() {
     health: 30,
     level: 2,
   })
-  
+
   const [battlelog, modifyLog] = useState([])
 
   //status of the spell, generally
@@ -36,6 +36,11 @@ function App() {
   const [chantData, setChant] = useState({
     time: 0,
     userSpell: '',
+    minDamage: 0,
+    maxDamage: 0,
+    isSpecial: false,
+    realChance: 20,
+    chance: 4,
     currentChant: '',
     chantChallenge: 'No Spell Yet!',
   })
@@ -45,14 +50,14 @@ function App() {
   //data
   const spellData = [
     {
-      chant: 'Fire wraiths, blasting rage!',
+      chantChallenge: 'Fire wraiths, blasting rage!',
       name: 'Fire Spell',
       minDamage: 15,
       maxDamage: 18,
       time: 6000,
     },
     {
-      chant: 'Stone spirits, come forth to our enemy!',
+      chantChallenge: 'Stone spirits, come forth to our enemy!',
       name: 'Stone Stun',
       isSpecial: true,
       realChance: 20,
@@ -62,7 +67,7 @@ function App() {
       time: 7000,
     },
     {
-      chant: 'Water refreshes me!',
+      chantChallenge: 'Water refreshes me!',
       name: 'Water Bender',
       minDamage: 20,
       maxDamage: 30,
@@ -84,9 +89,31 @@ function App() {
     level: 2
   }
 
-  function handleUserAction(name) { //onClick handler on spell button
-    let choosenSpell = spellData.filter(spell => spell.name === name)[0] //get another way to get spell
+  const getRandomNumber = (min, max) => Math.round(Math.random() * (max - min) + min)
+
+  function ordinaryAttack() {
+    const { chantChallenge, name, minDamage, maxDamage, time } = chantData;
+    // timerDisplay();
+    // setTimeout(() => {
+    // if (chantData.userSpell === chantChallenge) {
+    const damage = getRandomNumber(minDamage, maxDamage);
+    modifyLog([...battlelog, `Player attack with ${name}: ${damage} damage`]);
+    console.log(battlelog)
+    const health = monsterData.health - damage
+    modifyMonster({ ...monsterData, health: health })
+    // }
+    // }, spellStatus.time)
+  }
+  
+  function handleUserType(event) {
+    
+  }
+
+  async function handleUserAction(name) { //onClick handler on spell button
+    let choosenSpell = spellData.filter(spell => spell.name === name)[0]; //get another way to get spell
+    setChant(choosenSpell); //set our spell
     console.log(choosenSpell)
+    ordinaryAttack() // do it
   };
 
   function handleMonsterAction() {
@@ -96,10 +123,10 @@ function App() {
   function timerDisplay() {
     var timer = spellStatus.time;
     var interval = setInterval(() => {
-      if(spellStatus.time > 0) {
-        modSpellStatus({
-          ...spellStatus,
-          time: spellStatus.time--
+      if (chantData.time > 0) {
+        setChant({
+          ...chantData,
+          time: chantData.time--
         })
       } else {
         return timer = 0;
@@ -107,7 +134,7 @@ function App() {
     }, 1000)
     setTimeout(() => {
       clearInterval(interval)
-    }, 10000)
+    }, timer * 1000)
   }
 
   function defaultCondition() {
@@ -179,14 +206,14 @@ function App() {
       <div id="app">
         <div className="healths">
           <div className="friendly">
-            {playerData ? 
-            <HealthBarComponent health={playerData.health} name={playerData.name} isEnemy={false}></HealthBarComponent> : null
-          }
+            {playerData ?
+              <HealthBarComponent health={playerData.health} name={playerData.name} isEnemy={false}></HealthBarComponent> : null
+            }
           </div>
           <div className="enemy">
             {
-            monsterData ?
-            <HealthBarComponent health={monsterData.health} name={monsterData.name} isEnemy={true}></HealthBarComponent> : null
+              monsterData ?
+                <HealthBarComponent health={monsterData.health} name={monsterData.name} isEnemy={true}></HealthBarComponent> : null
             }
           </div>
         </div>
@@ -204,17 +231,17 @@ function App() {
           <SpellBtnComponent name="Save" clickHandler={saveProgress}></SpellBtnComponent>
 
         </div>
-        </div>
+      </div>
 
       <div className="chant-container">
         <div>
           {
             spellStatus ?
-            <h3>{spellStatus.chantChallenge}</h3> : null
+              <h3>{spellStatus.chantChallenge}</h3> : null
           }
           {spellStatus.spellChant ? <h4>Time (sec): {spellStatus.time}</h4> : ''}
-      </div>
-      <div className="user-chant">
+        </div>
+        <div className="user-chant">
           <input></input>
           <h4>Press enter to submit chant</h4>
         </div>
@@ -222,10 +249,10 @@ function App() {
       <div>
         <h2>Battle Log</h2>
         <ul>
-         {
-           battlelog.length > 0 ? 
-           battlelog.forEach(log => <li>{log}</li>) : null
-         }
+          {
+            battlelog.length > 0 ?
+              battlelog.map(log => <li key={log}>{log}</li>) : null
+          }
         </ul>
       </div>
     </div >
